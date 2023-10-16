@@ -1,0 +1,50 @@
+oldnames,newnames
+Country Name,country_name
+Country Code,country_code
+year,year
+"Proportion of children aged 24-59 months who are developmentally on track in health, learning and psychosocial well-being, both sexes (%)",ontrack_3to5_mf_pct
+"Proportion of children aged 24-59 months who are developmentally on track in health, learning and psychosocial well-being, female (%)",ontrack_3to5_f_pct
+"Proportion of children aged 24-59 months who are developmentally on track in health, learning and psychosocial well-being, male (%)",ontrack_3to5_m_pct
+"Proportion of children aged 24-59 months who are developmentally on track in health, learning and psychosocial well-being, adjusted gender parity index (GPIA)",ontrack_3to5_GPIA
+"Proportion of students at the end of primary achieving at least a minimum proficiency level in mathematics, adjusted gender parity index (GPIA)",prim_mathprof_GPIA
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in mathematics, both sexes (%)",prim_mathprof_mf_pct
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in mathematics, female (%)",prim_mathprof_f_pct
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in mathematics, male (%)",prim_mathprof_m_pct
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in reading, both sexes (%)",prim_readprof_mf_pct
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in reading, female (%)",prim_readprof_f_pct
+"Proportion of students at the end of primary education achieving at least a minimum proficiency level in reading, male (%)",prim_readprof_m_pct
+"Proportion of students at the end of primary achieving at least a minimum proficiency level in reading, adjusted gender parity index (GPIA)",prim_readprof_GPIA
+"Proportion of students at the end of lower secondary achieving at least a minimum proficiency level in mathematics, adjusted gender parity index (GPIA)",sec_mathprof_GPIA
+"Proportion of students at the end of lower secondary achieving at least a minimum proficiency level in reading, adjusted gender parity index (GPIA)",sec_readprof_GPIA
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in mathematics, both sexes (%)",sec_mathprof_mf_pct
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in mathematics, female (%)",sec_mathprof_f_pct
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in mathematics, male (%)",sec_mathprof_m_pct
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in mathematics, urban areas, both sexes (%)",DEL_sec_urban_mathprof
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in reading, both sexes (%)",sec_readprof_mf_pct
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in reading, female (%)",sec_readprof_f_pct
+"Proportion of students at the end of lower secondary education achieving at least a minimum proficiency level in reading, male (%)",sec_readprof_m_pct
+Government expenditure on education as % of GDP (%),govt_educ_exp_pct_gdp
+"Government expenditure on education, US$ (millions)",govt_educ_exp_usd_mil
+"Youth literacy rate, population 15-24 years, female (%)",youth_literacy_f_pct
+"Youth literacy rate, population 15-24 years, both sexes (%)",youth_literacy_mf_pct
+"Youth literacy rate, population 15-24 years, male (%)",youth_literacy_m_pct
+"Youth illiterate population, 15-24 years, female (number)",youth_illiterate_f_num
+"Youth illiterate population, 15-24 years, both sexes (number)",youth_illiterate_mf_num
+"Youth illiterate population, 15-24 years, male (number)",youth_illiterate_m_num
+"Adult illiterate population, 15+ years, both sexes (number)",adult_illiterate_mf_num
+"Adult illiterate population, 15+ years, female (number)",adult_illiterate_f_num
+"Adult illiterate population, 15+ years, male (number)",adult_illiterate_m_num
+"Adult literacy rate, population 15+ years, both sexes (%)",adult_literacy_mf_pct
+"Adult literacy rate, population 15+ years, female (%)",adult_literacy_f_pct
+"Adult literacy rate, population 15+ years, male (%)",adult_literacy_m_pct
+"Elderly illiterate population, 65+ years, both sexes (number)",elderly_illiterate_mf_num
+"Elderly illiterate population, 65+ years, female (number)",elderly_illiterate_f_num
+"Elderly illiterate population, 65+ years, male (number)",elderly_illiterate_m_num
+"Elderly literacy rate, population 65+ years, male (%)",elderly_literacy_m_pct
+"Elderly literacy rate, population 65+ years, female (%)",elderly_literacy_f_pct
+"Elderly literacy rate, population 65+ years, both sexes (%)",elderly_literacy_mf_pct
+"Population of compulsory school age, both sexes (number)",pop_schoolage_mf
+Female primary school age children out-of-school (%),prim_outschool_pct_f
+Primary school age children out-of-school (%),prim_outschool_pct_mf
+Male primary school age children out-of-school (%),prim_outschool_pct_m
+NA,DEL_NA

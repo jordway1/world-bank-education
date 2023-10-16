@@ -1,0 +1,141 @@
+---
+title: "World Bank Education"
+date: "2023-10-10"
+output: 
+  html_document:
+    theme: cosmo
+    code_folding: hide
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+```{r, echo = FALSE}
+library(tidyverse)
+library(googlesheets4)
+library(DT)
+library(ggrepel)
+```
+
+```{r, echo = FALSE}
+world_bank_data <- read_csv("world_bank_education.csv") %>% select(-'Series Code') %>%
+  mutate_all(~na_if(., "..")) %>% filter(!is.na(`Country Name`))
+
+world_bank_data <- world_bank_data %>% 
+  pivot_longer('1970 [YR1970]':'2020 [YR2020]', names_to = "year", values_to = "value")
+
+world_bank_data <- world_bank_data %>% pivot_wider(names_from = Series, values_from = value)
+
+column_names <- read_csv("column_names.csv")
+colnames(world_bank_data) <- column_names$newnames
+
+world_bank_data <- world_bank_data %>% select(-country_code, -DEL_sec_urban_mathprof, -DEL_NA)
+
+world_bank_data$year <- as.numeric(gsub(" .*","",world_bank_data$year))
+
+world_bank_data[3:46] <- lapply(world_bank_data[3:46], as.numeric)
+theme_update(plot.title = element_text(hjust = 0.5))
+
+```
+
+# Overview
+
+I've downloaded a dataset from the [World Bank](https://databank.worldbank.org/reports.aspx?source=Education%20Statistics) with information about historical educational outcomes and literacy rates. I was surprised to find that the data was sparse, so sparse that any kind of meaningful analysis is very limited. Many of the variables did not even have good coverage in the United States. 
+
+
+## Missing Data
+
+I downloaded 44 metrics from 1970 to 2020. Below is a table of the NA counts for each variable. Keep in mind that there are `r n_distinct(world_bank_data$year)` years and `r n_distinct(world_bank_data$country_name)` countries included in the dataset, meaning there are `r nrow(world_bank_data)` rows. Here's a chart of missing counts by variable.
+
+```{r}
+fun <- function(x){sum(is.na(x))}
+missing_values <- sapply(world_bank_data[3:46], FUN = fun) %>% as_tibble()
+
+missing_counts <- tibble(metric = colnames(world_bank_data[3:46]), missing_count = missing_values$value) %>% arrange(missing_count)
+
+missing_counts %>% ggplot(aes(reorder(metric, missing_count), missing_count)) +
+  geom_col() +
+  coord_cartesian(ylim = c(6000, 12000)) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_hline(yintercept = nrow(world_bank_data), linetype = "dashed", color = "red") +
+  theme(axis.text.x = element_text(angle = 70, hjust = 1), text = element_text(family = "serif")) + 
+  labs(title = "Missing Value Counts by Education Metrics", x = "Metric", y = "Missing Count") 
+```
+
+
+It's clear that metrics related to literacy have much higher coverage compared to the rest. Now we'll see how coverage looks by year.
+
+
+```{r}
+missing_counts_by_year <- world_bank_data %>%
+  mutate(missing = rowSums(is.na(.))) %>%
+  group_by(year) %>%
+  summarize(total_missing = sum(missing))
+
+missing_counts_by_year %>% 
+  ggplot(aes(year, total_missing)) + 
+  geom_line() + 
+  scale_x_continuous(breaks = c(seq(1970, 2020, by = 5), 2018)) +
+  geom_hline(yintercept = 9639, linetype = "dashed", color = "red") +
+  theme(text = element_text(family = "serif"), 
+        axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  labs(title = "Missing Values Counts by Year", x = "Year", y = "Missing Count")
+
+```
+
+
+There's much better coverage from 2000 until 2018, but it's still very sparse.. 
+
+# Literacy Rates
+
+Since 2018 has the best coverage, below is a sortable table of adult literacy rates by gender.
+
+```{r}
+adult_literacy <- world_bank_data %>% 
+  filter(year == 2018, !is.na(adult_literacy_mf_pct)) %>%
+  select(country_name, adult_literacy_mf_pct, adult_literacy_f_pct, adult_literacy_m_pct) %>%
+  mutate(gender_diff = adult_literacy_m_pct - adult_literacy_f_pct) %>%
+  mutate_at(vars(2:5), ~./100)
+colnames(adult_literacy) <- c("Country", "Adult Literacy", "Adult Literacy Female", "Adult Literacy Male", "Gender Literacy Difference")
+
+datatable(adult_literacy, options = list(
+  pageLength = 10, searching = TRUE, ordering = TRUE), caption = htmltools::tags$caption( style = 'caption-side: top; text-align: center; color:black;  font-size:200%; font-family: serif','2018 Literacy Rates')) %>%
+  formatPercentage(columns = colnames(adult_literacy)[-1], digits = 2)
+
+```
+
+
+There are only 79 rows in the dataset since coverage is so sparse. Of the covered countries, Uzbekistan has the highest literacy rate, South Sudan has the lowest, and Afghanistan has the largest difference between male and female literacy rates, at 25.67%.
+
+
+# Government Expenditure on Education
+
+
+I'll take a quick look at the relationship between government expenditure on education and youth literacy rates in 2018. A more valuable analysis would involve a better-populated dataset and control variables. One undergraduate [Harvard study](https://src.gse.harvard.edu/files/gse-src/files/poster_nam_annie_hyokyong_.pdf) suggested that government expenditure on education has a significant positive impact on youth literacy rates for developing countries, but a slightly negative effect among developed countries.
+
+
+```{r}
+world_bank_data %>%
+  filter(year == 2018) %>%
+  select(country_name, govt_educ_exp_pct_gdp, govt_educ_exp_usd_mil, youth_literacy_mf_pct) %>%
+  filter(!is.na(youth_literacy_mf_pct), !is.na(govt_educ_exp_usd_mil)) %>%
+  ggplot(aes(govt_educ_exp_pct_gdp, youth_literacy_mf_pct)) + 
+  geom_point(aes(size = govt_educ_exp_usd_mil), color = "dodgerblue3", shape = 1) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  geom_text_repel(family = "serif", 
+                  aes(label = ifelse(country_name %in% c("Kazakhstan", "Niger", "Sierra Leone"), country_name, '')), 
+                  size = 3.5) +
+  labs(title = "Government Education Expenditure and Youth Literacy Rates", 
+       x = "Education Expenditure (% of GDP)", y = "Youth Literacy (%)", 
+       size = "Education Expenditure (Million USD)") +
+  theme(text = element_text(family = "serif"))
+
+```
+
+
+# Conclusion
+
+Overall this dataset was too sparse to make any kind of meaningful analysis, which is disappointing. In the future, with a more populated dataset, I would be interesting to look into what drives gender differences in literacy. I was also surprised to find that literacy in the West Bank and Gaza is very high, over 97% overall.
